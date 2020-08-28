@@ -19,7 +19,7 @@ ASSUMPTIONS:
 """
 def get_shipment(order: Items, inventory: List[WareHouse]) -> List[Shipment]:
     """
-    If order or inventory is not formatted correctly, raises AssertionError
+    Assumes order and inventory are of the correct type
     :param order: map of items being ordered + how many are ordered
     :param inventory: list of warehouse name and their respective item inventory amounts
     :return: cheapest shipment if it exists, else NO_SHIPMENT
