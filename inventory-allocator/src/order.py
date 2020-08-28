@@ -6,17 +6,15 @@ class WareHouse(TypedDict):
     name: str
     inventory: Items
 
-# functions to check valid structure of order/inventory based on typing hints above
-validItems = lambda x: type(x)==dict and all((type(key)==str and type(val)==int) for key, val in x.items())
-validWarehouse = lambda x: type(x)==dict and len(x)==2 \
-                           and 'name' in x and type(x['name'])==str \
-                           and 'inventory' in x and validItems(x['inventory'])
-
 """
 ASSUMPTIONS:
+    0. Clarification on inputs from engineer at Deliverr (Joshua Kastendick)
+        - You can assume that the inputs passed to you are of the correct type (but could be empty).
+        - Item quantities are non-negative; they can be 0 or positive, but not negative.
     1. Shipping from one warehouse is cheaper than multiple warehouses
     2. Number of items shipped from each warehouse does not affect the cost
     3. For shipments with same number of warehouses, return shipment that has the first cheaper warehouse not in the other shipments
+        In other words, a greedy algorithm that ships as much inventory as possible from cheaper warehouses
         (ie. for inventory [w1, w2, w3, w4, w5], prefer shipment [w1, w4] over [w2, w3] and [w1, w2, w5] over [w1, w3, w4])
 """
 def get_shipment(order: Items, inventory: List[WareHouse]) -> List[Shipment]:
@@ -31,11 +29,11 @@ def get_shipment(order: Items, inventory: List[WareHouse]) -> List[Shipment]:
     def dfs(this_order: Items, warehouse_idx: int):
         """
         DFS to traverse order/warehouse state space, using greedy method to complete shipments one warehouse at a time
-        :param this_order: the current order to fulfill
+        :param this_order: the current order to fulfill, must be non-empty
         :param warehouse_idx: idx of warehouse to first attempt to fill in inventory list
         :return: cheapest shipment, if shipment exists (otherwise no shipment)
         """
-        assert this_order != NO_ITEMS, "Predefined condition of parameter 'this_order'"
+        assert this_order != NO_ITEMS, "predefined condition of parameter 'this_order'"
         if warehouse_idx == len(inventory): return NO_SHIPMENT # base case: no more warehouses
 
         warehouse = inventory[warehouse_idx] # the current warehouse
@@ -64,12 +62,7 @@ def get_shipment(order: Items, inventory: List[WareHouse]) -> List[Shipment]:
 
         return min(include, exclude, key=len) # return the shipment with less warehouses (if equal, prefer shipment that includes this warehouse)
 
-    # check for valid inputs
-    assert validItems(order) and all(amount > 0 for amount in order.values()), "Invalid order"
-    assert type(inventory)==list and all(validWarehouse(warehouse) for warehouse in inventory), "Invalid warehouse list"
-    names = [warehouse['name'] for warehouse in inventory]
-    assert len(names) == len(set(names)), "Warehouse naming conflict"
-
+    order = {k:v for k,v in order.items() if v>0} # ignore items with non-positive amount
     if order == NO_ITEMS: return NO_SHIPMENT # edge case, empty order
 
     output = dfs(order, 0)

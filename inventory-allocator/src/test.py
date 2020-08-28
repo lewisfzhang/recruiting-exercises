@@ -82,21 +82,21 @@ def test8():
                  {'name': 'w4', 'inventory': {'b': 10}}]
     return equals(expected, order, inventory)
 
-def test9():
-    """ Invalid order --> throws AssertionError """
-    testA = caughtAssertion({'apple': 'z'}, [])  # item amount in not an integer
-    testB = caughtAssertion({'apple': -1}, [])  # negative item amount
-    testC = caughtAssertion({1: 1}, [])  # item key should be a string
-    return testA and testB and testC
-
-def test10():
-    """ Invalid inventory --> throws AssertionError """
-    testA = caughtAssertion({}, [{'name': 'bad', 'inventory': 1}])  # invalid inventory
-    testB = caughtAssertion({}, [{'inventory': {'apple': 2}}])  # no name
-    testC = caughtAssertion({}, [{'name': 'w1', 'inventory': {'a': 5}}, {'name': 'w1', 'inventory': {'c': 4}}])  # warehouses should have unique name
-    return testA and testB and testC
+# def test9():
+#     """ Invalid order --> throws AssertionError """
+#     testA = caughtAssertion({'apple': 'z'}, [])  # item amount in not an integer
+#     testB = caughtAssertion({'apple': -1}, [])  # negative item amount
+#     testC = caughtAssertion({1: 1}, [])  # item key should be a string
+#     return testA and testB and testC
+#
+# def test10():
+#     """ Invalid inventory --> throws AssertionError """
+#     testA = caughtAssertion({}, [{'name': 'bad', 'inventory': 1}])  # invalid inventory
+#     testB = caughtAssertion({}, [{'inventory': {'apple': 2}}])  # no name
+#     testC = caughtAssertion({}, [{'name': 'w1', 'inventory': {'a': 5}}, {'name': 'w1', 'inventory': {'c': 4}}])  # warehouses should have unique name
+#     return testA and testB and testC
 
 if __name__ == '__main__':
-    tests = [test0, test1, test2, test3, test4, test5, test6, test7, test8, test9, test10]
+    tests = [test0, test1, test2, test3, test4, test5, test6, test7, test8] #, test9, test10]
     for idx, test in enumerate(tests):
         print(f"Running test #{idx}... {'Pass' if test() else 'Fail'}")
